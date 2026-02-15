@@ -3,7 +3,7 @@ watch:
 
 notif:
   discord:
-    webhookURL: "https://discord.com/api/webhooks/1472652478913843350/nb0R7U0BrW-WP3Y7riSCCZyisHJoAxCI-_2YLnVnnepJ6qmOHTKTDUxFEsz-ZRGYFOPt"
+    webhookURL: WEEBHOOKURLHERE
     mentions:
       - "@here"
     templateBody: |
