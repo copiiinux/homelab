@@ -1,0 +1,25 @@
+services:
+  nginx-proxy:
+    build: ./proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./proxy/certs:/etc/nginx/certs:ro
+      - ./proxy/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    restart: always
+    environment:
+      DEFAULT_EMAIL: loick2610@gmail.com
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - ./proxy/certs:/etc/nginx/certs:rw
+      - ./proxy/acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - nginx-proxy
