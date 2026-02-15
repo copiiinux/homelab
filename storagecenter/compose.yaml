@@ -1,0 +1,36 @@
+services:
+
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: ${TZ}
+    volumes:
+      - ${POSTGRES_DATA}:/var/lib/postgresql
+    restart: unless-stopped
+
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud
+    ports:
+      - 1111:80
+    environment:
+      PUID: ${PUID_NEXTCLOUD}
+      PGID: ${PGID_NEXTCLOUD}
+      TZ: ${TZ}
+      VIRTUAL_HOST: cloud.copiiinux.ch
+      LETSENCRYPT_HOST: cloud.copiiinux.ch
+    volumes:
+      - ${NEXTCLOUD_DATA}/config:/config
+      - ${NEXTCLOUD_DATA}/data:/data
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - www_default
+      - default
+
+networks:
+  www_default:
+    external: true
