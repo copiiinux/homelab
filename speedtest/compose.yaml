@@ -1,0 +1,11 @@
+services:
+  librespeed:
+    image: lscr.io/linuxserver/librespeed
+    ports:
+      - 2222:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Zurich
+      - MODE=standalone
+    restart: unless-stopped
