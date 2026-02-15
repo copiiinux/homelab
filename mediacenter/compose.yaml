@@ -1,0 +1,102 @@
+services:
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr
+    environment:
+      PUID: ${PUID_SONARR}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/sonarr:/config
+      - ${MEDIA_ROOT}:/data
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    environment:
+      PUID: ${PUID_RADARR}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/radarr:/config
+      - ${MEDIA_ROOT}:/data
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr
+    environment:
+      PUID: ${PUID_PROWLARR}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent
+    environment:
+      PUID: ${PUID_QBITTORRENT}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+      WEBUI_PORT: 8080
+    volumes:
+      - ${CONFIG_ROOT}/qbittorrent:/config
+      - ${TORRENT_ROOT}:/data/torrents
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin
+    environment:
+      PUID: ${PUID_JELLYFIN}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+      VIRTUAL_HOST: jellyfin.copiiinux.ch
+      VIRTUAL_PORT: 8096
+      LETSENCRYPT_HOST: jellyfin.copiiinux.ch
+    volumes:
+      - ${CONFIG_ROOT}/jellyfin:/config
+      - ${DATA_ROOT}:/data:ro
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+    networks:
+      - default
+      - www_default
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr
+    environment:
+      PUID: ${PUID_JELLYSEERR}
+      PGID: ${PGID_MEDIA}
+      UMASK: ${UMASK}
+      TZ: ${TZ}
+      VIRTUAL_HOST: jellyseerr.copiiinux.ch
+      VIRTUAL_PORT: 5055
+      LETSENCRYPT_HOST: jellyseerr.copiiinux.ch
+    volumes:
+      - ${CONFIG_ROOT}/jellyseerr:/app/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+    networks:
+      - default
+      - www_default
+
+networks:
+  www_default:
+    external: true
