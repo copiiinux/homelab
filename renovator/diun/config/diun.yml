@@ -1,0 +1,17 @@
+watch:
+  schedule: "0 */6 * * *"
+
+notif:
+  discord:
+    webhookURL: "https://discord.com/api/webhooks/1472652478913843350/nb0R7U0BrW-WP3Y7riSCCZyisHJoAxCI-_2YLnVnnepJ6qmOHTKTDUxFEsz-ZRGYFOPt"
+    mentions:
+      - "@here"
+    templateBody: |
+      Docker tag {{ if .Entry.Image.HubLink }}[**{{ .Entry.Image }}**]({{ .Entry.Image.HubLink }}){{ else }}**{{ .Entry.Image }}**{{ end }} which you subscribed to through {{ .Entry.Provider }} provider {{ if (eq .Entry.Status "new") }}is available{{ else }}has been updated{{ end }} on {{ .Entry.Image.Domain }} registry (triggered by {{ .Meta.Hostname }} host).
+
+providers:
+  docker:
+    watchByDefault: true
+  dockerfile:
+    patterns:
+      - "/home/www/proxy/Dockerfile"
