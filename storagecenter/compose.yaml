@@ -13,14 +13,10 @@ services:
 
   nextcloud:
     image: lscr.io/linuxserver/nextcloud:33.0.0
-    ports:
-      - 1111:80
     environment:
       PUID: ${PUID_NEXTCLOUD}
       PGID: ${PGID_NEXTCLOUD}
       TZ: ${TZ}
-      VIRTUAL_HOST: cloud.copiiinux.ch
-      LETSENCRYPT_HOST: cloud.copiiinux.ch
     volumes:
       - ${NEXTCLOUD_DATA}/config:/config
       - ${NEXTCLOUD_DATA}/data:/data

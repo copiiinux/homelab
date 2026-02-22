@@ -1,4 +1,1 @@
-proxy/acme
-proxy/certs
-proxy/html
-proxy/vhost.d
+swag/

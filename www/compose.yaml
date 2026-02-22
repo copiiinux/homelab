@@ -1,25 +1,20 @@
 services:
-  nginx-proxy:
-    build: ./proxy
-    restart: always
+  swag:
+    image: lscr.io/linuxserver/swag:5.3.1
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Zurich
+      - URL=copiiinux.ch
+      - VALIDATION=http
+      - SUBDOMAINS=cloud,jellyfin,jellyseerr
+      - SWAG_AUTORELOAD=true
+    volumes:
+      - ./swag:/config
     ports:
       - 80:80
       - 443:443
-    volumes:
-      - ./proxy/certs:/etc/nginx/certs:ro
-      - ./proxy/html:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  acme-companion:
-    image: nginxproxy/acme-companion:2.6.3
-    restart: always
-    environment:
-      DEFAULT_EMAIL: loick2610@gmail.com
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - ./proxy/certs:/etc/nginx/certs:rw
-      - ./proxy/acme:/etc/acme.sh
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      - nginx-proxy
+      - 443:443/udp
+    restart: unless-stopped
