@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
 
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:5.1.4
+    image: lscr.io/linuxserver/qbittorrent:20.04.1
     environment:
       PUID: ${PUID_QBITTORRENT}
       PGID: ${PGID_MEDIA}
