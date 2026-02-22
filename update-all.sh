@@ -2,7 +2,6 @@ git pull
 
 for dir in */; do
   compose_file="$dir/compose.yaml"
-  env_file="$dir/.env"
 
   if [[ -f "$compose_file" ]]; then
     cd "$dir" || continue
