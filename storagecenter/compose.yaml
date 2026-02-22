@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    image: postgres:alpine
+    image: postgres:18.2
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   nextcloud:
-    image: lscr.io/linuxserver/nextcloud
+    image: lscr.io/linuxserver/nextcloud:32.0.6
     ports:
       - 1111:80
     environment:

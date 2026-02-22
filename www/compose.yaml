@@ -11,7 +11,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   acme-companion:
-    image: nginxproxy/acme-companion
+    image: nginxproxy/acme-companion:2.6.3
     restart: always
     environment:
       DEFAULT_EMAIL: loick2610@gmail.com
