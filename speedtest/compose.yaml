@@ -4,8 +4,8 @@ services:
     ports:
       - "2222:80"
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - PUID=${PUID_LIBRESPEED}
+      - PGID=${PGID_SPEEDTEST}
       - TZ=${TZ}
       - MODE=standalone
     healthcheck:

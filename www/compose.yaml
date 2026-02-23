@@ -4,8 +4,8 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - PUID=${PUID_SWAG}
+      - PGID=${PGID_WWW}
       - TZ=${TZ}
       - URL=${URL}
       - VALIDATION=${VALIDATION}
