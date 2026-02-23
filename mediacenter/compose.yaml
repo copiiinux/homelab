@@ -11,7 +11,16 @@ services:
       - ${CONFIG_ROOT}/sonarr:/config
       - ${MEDIA_ROOT}:/data
     ports:
-      - 8989:8989
+      - "8989:8989"
+    depends_on:
+      prowlarr:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8989/health || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
 
   radarr:
@@ -25,7 +34,16 @@ services:
       - ${CONFIG_ROOT}/radarr:/config
       - ${MEDIA_ROOT}:/data
     ports:
-      - 7878:7878
+      - "7878:7878"
+    depends_on:
+      prowlarr:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:7878/health || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
 
   prowlarr:
@@ -38,7 +56,13 @@ services:
     volumes:
       - ${CONFIG_ROOT}/prowlarr:/config
     ports:
-      - 9696:9696
+      - "9696:9696"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9696/health || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
 
   qbittorrent:
@@ -53,9 +77,15 @@ services:
       - ${CONFIG_ROOT}/qbittorrent:/config
       - ${TORRENT_ROOT}:/data/torrents
     ports:
-      - 8080:8080
-      - 6881:6881
-      - 6881:6881/udp
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
 
   jellyfin:
@@ -69,7 +99,13 @@ services:
       - ${CONFIG_ROOT}/jellyfin:/config
       - ${DATA_ROOT}:/data:ro
     ports:
-      - 8096:8096
+      - "8096:8096"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8096/health || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
     networks:
       - default
@@ -83,12 +119,12 @@ services:
     volumes:
       - ${CONFIG_ROOT}/seerr:/app/config
     ports:
-      - 5055:5055
+      - "5055:5055"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 20s
-      timeout: 3s
-      interval: 15s
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
       retries: 3
     restart: unless-stopped
     networks:

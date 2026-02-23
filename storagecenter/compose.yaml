@@ -8,7 +8,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       TZ: ${TZ}
     volumes:
-      - ${POSTGRES_DATA}:/var/lib/postgresql
+      - ./postgres:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
 
   nextcloud:
@@ -18,10 +24,17 @@ services:
       PGID: ${PGID_NEXTCLOUD}
       TZ: ${TZ}
     volumes:
-      - ${NEXTCLOUD_DATA}/config:/config
-      - ${NEXTCLOUD_DATA}/data:/data
+      - ./nextcloud/config:/config
+      - ./nextcloud/data:/data
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost/status.php || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
     networks:
       - www_default

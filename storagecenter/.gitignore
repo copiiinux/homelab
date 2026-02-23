@@ -1,3 +1,2 @@
-.env
-nextcloud
-postgres
+postgres/
+nextcloud/
