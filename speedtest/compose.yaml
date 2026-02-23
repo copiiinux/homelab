@@ -2,10 +2,16 @@ services:
   librespeed:
     image: lscr.io/linuxserver/librespeed:5.5.1
     ports:
-      - 2222:80
+      - "2222:80"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Zurich
+      - PUID=${PUID_LIBRESPEED}
+      - PGID=${PGID_SPEEDTEST}
+      - TZ=${TZ}
       - MODE=standalone
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost/api/config || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
