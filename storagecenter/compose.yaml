@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    image: postgres:18.2
+    image: postgres:18.2-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
