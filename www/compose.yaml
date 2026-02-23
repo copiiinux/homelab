@@ -9,7 +9,7 @@ services:
       - TZ=Europe/Zurich
       - URL=copiiinux.ch
       - VALIDATION=http
-      - SUBDOMAINS=cloud,jellyfin,jellyseerr
+      - SUBDOMAINS=cloud,jellyfin,seerr
       - SWAG_AUTORELOAD=true
     volumes:
       - ./swag:/config
