@@ -8,7 +8,7 @@ services:
       UMASK: ${UMASK}
       TZ: ${TZ}
     volumes:
-      - ${CONFIG_ROOT}/sonarr:/config
+      - ./sonarr:/config
       - ${MEDIA_ROOT}:/data
     ports:
       - "8989:8989"
@@ -31,7 +31,7 @@ services:
       UMASK: ${UMASK}
       TZ: ${TZ}
     volumes:
-      - ${CONFIG_ROOT}/radarr:/config
+      - ./radarr:/config
       - ${MEDIA_ROOT}:/data
     ports:
       - "7878:7878"
@@ -54,7 +54,7 @@ services:
       UMASK: ${UMASK}
       TZ: ${TZ}
     volumes:
-      - ${CONFIG_ROOT}/prowlarr:/config
+      - ./prowlarr:/config
     ports:
       - "9696:9696"
     healthcheck:
@@ -74,7 +74,7 @@ services:
       TZ: ${TZ}
       WEBUI_PORT: 8080
     volumes:
-      - ${CONFIG_ROOT}/qbittorrent:/config
+      - ./qbittorrent:/config
       - ${TORRENT_ROOT}:/data/torrents
     ports:
       - "8080:8080"
@@ -96,7 +96,7 @@ services:
       UMASK: ${UMASK}
       TZ: ${TZ}
     volumes:
-      - ${CONFIG_ROOT}/jellyfin:/config
+      - ./jellyfin:/config
       - ${DATA_ROOT}:/data:ro
     ports:
       - "8096:8096"
@@ -117,7 +117,7 @@ services:
     environment:
       TZ: ${TZ}
     volumes:
-      - ${CONFIG_ROOT}/seerr:/app/config
+      - ./seerr:/app/config
     ports:
       - "5055:5055"
     healthcheck:
