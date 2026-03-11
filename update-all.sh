@@ -12,7 +12,7 @@ for dir in */; do
   if [[ -f "$compose_file" ]]; then
     echo "Updating service: $dir"
     cd "$dir" || continue
-    docker compose up --build -d --pull=always --remove-orphans --wait --wait-timeout 60 -y
+    docker compose up -d --pull=always --remove-orphans --wait -y
     cd - > /dev/null
   fi
 done
