@@ -5,7 +5,6 @@ services:
       - SYS_RAWIO
     ports:
       - "8081:8080"
-      - "8086:8086"
     volumes:
       - /run/udev:/run/udev:ro
       - ./scrutiny/config:/opt/scrutiny/config
@@ -15,4 +14,10 @@ services:
      - /dev/sdb
      - /dev/sdc
      - /dev/sdd
+    healthcheck:
+      test: curl -f http://localhost:8080/api/health || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
     restart: unless-stopped
