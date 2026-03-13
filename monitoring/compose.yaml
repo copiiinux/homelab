@@ -21,3 +21,18 @@ services:
       interval: 30s
       retries: 3
     restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:2.39.0-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer:/data
+    ports:
+      - 9000:9000
+    healthcheck:
+      test: wget --no-verbose --spider http://localhost:9000/api/system/status || exit 1
+      start_period: 30s
+      timeout: 5s
+      interval: 30s
+      retries: 3
+    restart: unless-stopped
