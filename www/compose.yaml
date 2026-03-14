@@ -11,10 +11,12 @@ services:
       - VALIDATION=${VALIDATION}
       - SUBDOMAINS=${SUBDOMAINS}
       - SWAG_AUTORELOAD=true
+      - DOCKER_MODS=linuxserver/mods:swag-dashboard
     volumes:
       - ./swag:/config
     ports:
       - "80:80"
+      - "81:81"
       - "443:443"
       - "443:443/udp"
     healthcheck:
@@ -24,3 +26,4 @@ services:
       interval: 30s
       retries: 3
     restart: unless-stopped
+
