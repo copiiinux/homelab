@@ -1,27 +1,41 @@
 #!/bin/bash
-set -e
 
-# Update from git
+FAILED_STACKS=()
+
 echo "Pulling latest changes from git..."
 git pull
 
-# Update all services
 for dir in */; do
   compose_file="$dir/compose.yaml"
 
-  if [[ -f "$compose_file" ]]; then
-    echo "Updating service: $dir"
-    cd "$dir" || continue
-    docker compose up -d --pull=always --remove-orphans --wait
-    cd - > /dev/null
+  if [[ ! -f "$compose_file" ]]; then
+    continue
   fi
+
+  echo "Updating stack: $dir"
+  cd "$dir" || continue
+
+  if docker compose up -d --pull=always --remove-orphans --wait; then
+    echo "  ✓ $dir updated successfully"
+  else
+    echo "  ✗ $dir failed to update — skipping"
+    FAILED_STACKS+=("$dir")
+  fi
+
+  cd - > /dev/null
 done
 
-echo "All services updated successfully."
-
-# Cleanup unused images and containers (but NOT volumes)
+echo ""
 echo "Cleaning up unused Docker resources..."
-docker system prune -a -f
+docker system prune -a -f --volumes
 
-echo "Update complete!"
-
+echo ""
+if [[ ${#FAILED_STACKS[@]} -eq 0 ]]; then
+  echo "All stacks updated successfully."
+else
+  echo "Update complete with errors. Failed stacks:"
+  for s in "${FAILED_STACKS[@]}"; do
+    echo "  - $s"
+  done
+  exit 1
+fi
