@@ -8,6 +8,7 @@ updates:
   - package-ecosystem: "docker-compose"
     directories:
       - "mediacenter"
+      - "monitoring"
       - "speedtest"
       - "storagecenter"
       - "www"
