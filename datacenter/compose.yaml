@@ -59,6 +59,7 @@ services:
       TZ: ${TZ}
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:9898 || exit 1
+      start_period: 30s
       interval: 30s
       timeout: 5s
       retries: 3
