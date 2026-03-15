@@ -7,10 +7,10 @@ version: 2
 updates:
   - package-ecosystem: "docker-compose"
     directories:
+      - "datacenter"
       - "mediacenter"
       - "monitoring"
       - "speedtest"
-      - "storagecenter"
       - "www"
     schedule:
       interval: "daily"
