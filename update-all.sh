@@ -3,7 +3,7 @@
 FAILED_STACKS=()
 
 echo "Pulling latest changes from git..."
-git pull
+git pull || { echo "git pull failed, aborting"; exit 1; }
 
 for dir in */; do
   compose_file="$dir/compose.yaml"
