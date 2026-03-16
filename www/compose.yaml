@@ -10,6 +10,7 @@ services:
       - URL=${URL}
       - VALIDATION=${VALIDATION}
       - SUBDOMAINS=${SUBDOMAINS}
+      - DNSPLUGIN=${DNSPLUGIN}
       - SWAG_AUTORELOAD=true
       - DOCKER_MODS=linuxserver/mods:swag-dashboard
     volumes:
