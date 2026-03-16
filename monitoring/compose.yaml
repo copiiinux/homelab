@@ -15,7 +15,7 @@ services:
      - /dev/sdc
      - /dev/sdd
     healthcheck:
-      test: curl -f http://localhost:8080/api/health || exit 1 # wget not packaged
+      test: curl -fso /dev/null http://localhost:8080/api/health || exit 1 # wget not packaged
       start_period: 30s
       timeout: 5s
       interval: 30s
