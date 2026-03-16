@@ -101,7 +101,7 @@ services:
     ports:
       - "8096:8096"
     healthcheck:
-      test: curl -Lk http://localhost:8096/health || exit 1
+      test: curl -Lk http://localhost:8096/health || exit 1 # wget not packaged
       start_period: 30s
       timeout: 5s
       interval: 30s
