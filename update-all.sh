@@ -1,4 +1,5 @@
 #!/bin/bash
+set -uo pipefail
 
 FAILED_STACKS=()
 
