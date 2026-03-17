@@ -10,7 +10,6 @@ updates:
       - "datacenter"
       - "mediacenter"
       - "monitoring"
-      - "speedtest"
       - "www"
     schedule:
       interval: "daily"
