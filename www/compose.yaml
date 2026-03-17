@@ -4,27 +4,22 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - PUID=${PUID_SWAG}
-      - PGID=${PGID_WWW}
-      - TZ=${TZ}
-      - URL=${URL}
-      - VALIDATION=${VALIDATION}
-      - SUBDOMAINS=${SUBDOMAINS}
-      - DNSPLUGIN=${DNSPLUGIN}
-      - SWAG_AUTORELOAD=true
-      - DOCKER_MODS=linuxserver/mods:swag-dashboard
-    volumes:
-      - ./swag:/config
-    ports:
-      - "80:80"
-      - "81:81"
-      - "443:443"
-      - "443:443/udp"
+      TZ: ${TZ}
+      PUID: ${PUID_SWAG}
+      PGID: ${PGID_WWW}
+      URL: ${URL}
+      VALIDATION: ${VALIDATION}
+      SUBDOMAINS: ${SUBDOMAINS}
+      DNSPLUGIN: ${DNSPLUGIN}
+      SWAG_AUTORELOAD: true
+      DOCKER_MODS: linuxserver/mods:swag-dashboard
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     restart: unless-stopped
+    volumes:
+      - ./swag:/config
 

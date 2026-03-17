@@ -1,135 +1,98 @@
 services:
-
   sonarr:
     image: lscr.io/linuxserver/sonarr:4.0.16
     environment:
+      TZ: ${TZ}
       PUID: ${PUID_SONARR}
       PGID: ${PGID_MEDIA}
-      UMASK: ${UMASK}
-      TZ: ${TZ}
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8989/health || exit 1
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
     volumes:
       - ./sonarr:/config
       - ${MEDIA_ROOT}:/data
-    ports:
-      - "8989:8989"
-    depends_on:
-      prowlarr:
-        condition: service_healthy
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8989/health || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
 
   radarr:
     image: lscr.io/linuxserver/radarr:6.0.4
     environment:
+      TZ: ${TZ}
       PUID: ${PUID_RADARR}
       PGID: ${PGID_MEDIA}
-      UMASK: ${UMASK}
-      TZ: ${TZ}
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:7878/health || exit 1
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
     volumes:
       - ./radarr:/config
       - ${MEDIA_ROOT}:/data
-    ports:
-      - "7878:7878"
-    depends_on:
-      prowlarr:
-        condition: service_healthy
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:7878/health || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:2.3.0
     environment:
+      TZ: ${TZ}
       PUID: ${PUID_PROWLARR}
       PGID: ${PGID_MEDIA}
-      UMASK: ${UMASK}
-      TZ: ${TZ}
-    volumes:
-      - ./prowlarr:/config
-    ports:
-      - "9696:9696"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:9696/health || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
+    ports:
+      - "9696:9696"
     restart: unless-stopped
+    volumes:
+      - ./prowlarr:/config
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:5.1.4
     environment:
+      TZ: ${TZ}
       PUID: ${PUID_QBITTORRENT}
       PGID: ${PGID_MEDIA}
-      UMASK: ${UMASK}
-      TZ: ${TZ}
-      WEBUI_PORT: 8080
-    volumes:
-      - ./qbittorrent:/config
-      - ${TORRENT_ROOT}:/data/torrents
-    ports:
-      - "8080:8080"
-      - "6881:6881"
-      - "6881:6881/udp"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
+    ports:
+      - "8080:8080" # webui
+      - "6881:6881"
+      - "6881:6881/udp"
     restart: unless-stopped
+    volumes:
+      - ./qbittorrent:/config
+      - ${TORRENT_ROOT}:/downloads
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:10.11.6
     environment:
+      TZ: ${TZ}
       PUID: ${PUID_JELLYFIN}
       PGID: ${PGID_MEDIA}
-      UMASK: ${UMASK}
-      TZ: ${TZ}
+    healthcheck:
+      test: curl -fso /dev/null http://localhost:8096/health || exit 1 # wget not packaged
+    networks:
+      - default
+      - www_default
+    ports:
+      - "8096:8096"
+    restart: unless-stopped
     volumes:
       - ./jellyfin:/config
       - ${DATA_ROOT}:/data:ro
-    ports:
-      - "8096:8096"
-    healthcheck:
-      test: curl -fso /dev/null http://localhost:8096/health || exit 1 # wget not packaged
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
-    networks:
-      - default
-      - www_default
 
   seerr:
     image: ghcr.io/seerr-team/seerr:v3.1.0
-    init: true
     environment:
       TZ: ${TZ}
-    volumes:
-      - ./seerr:/app/config
-    ports:
-      - "5055:5055"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
+    init: true
     networks:
       - default
       - www_default
+    ports:
+      - "5055:5055"
+    restart: unless-stopped
+    volumes:
+      - ./seerr:/app/config
 
 networks:
   www_default:

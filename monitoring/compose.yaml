@@ -3,12 +3,6 @@ services:
     image: ghcr.io/starosdev/scrutiny:1.47.1-omnibus
     cap_add:
       - SYS_RAWIO
-    ports:
-      - "8081:8080"
-    volumes:
-      - /run/udev:/run/udev:ro
-      - ./scrutiny/config:/opt/scrutiny/config
-      - ./scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
      - /dev/sda
      - /dev/sdb
@@ -16,67 +10,57 @@ services:
      - /dev/sdd
     healthcheck:
       test: curl -fso /dev/null http://localhost:8080/api/health || exit 1 # wget not packaged
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
+    ports:
+      - "8081:8080"
     restart: unless-stopped
+    volumes:
+      - /run/udev:/run/udev:ro
+      - ./scrutiny/config:/opt/scrutiny/config
+      - ./scrutiny/influxdb:/opt/scrutiny/influxdb
 
   portainer:
     image: portainer/portainer-ce:2.39.0-alpine
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9000/api/system/status || exit 1
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer:/data
-    ports:
-      - 9000:9000
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:9000/api/system/status || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
 
   homepage:
     image: ghcr.io/gethomepage/homepage:v1.11.0
-    volumes:
-      - ./homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - "3000:3000"
     environment:
       PUID: ${PUID_HOMEPAGE}
-      PGID: ${PGID}
+      PGID: ${PGID_MONITORING}
       HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
+    ports:
+       - "3000:3000"
     restart: unless-stopped
+    volumes:
+      - ./homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   librespeed:
     image: lscr.io/linuxserver/librespeed:5.5.1
-    ports:
-      - "2222:80"
     environment:
       TZ: ${TZ}
       PUID: ${PUID_LIBRESPEED}
-      PGID: ${PGID}
+      PGID: ${PGID_MONITORING}
       MODE: standalone
-    volumes:
-      - ./librespeed:/config
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost/api/config || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
     networks:
-      - www_default
       - default
+      - www_default
+    ports:
+      - "2222:80"
+    restart: unless-stopped
+    volumes:
+      - ./librespeed:/config
 
 networks:
   www_default:

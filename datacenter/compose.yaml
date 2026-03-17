@@ -1,47 +1,49 @@
 services:
-
   postgres:
     image: postgres:18.3-alpine
     environment:
+      TZ: ${TZ}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      TZ: ${TZ}
-    volumes:
-      - ./postgres:/var/lib/postgresql
     healthcheck:
       test: pg_isready -U ${POSTGRES_USER}
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
     restart: unless-stopped
+    volumes:
+      - ./postgres:/var/lib/postgresql
 
   nextcloud:
     image: lscr.io/linuxserver/nextcloud:33.0.0
-    environment:
-      PUID: ${PUID_NEXTCLOUD}
-      PGID: ${PGID_NEXTCLOUD}
-      TZ: ${TZ}
-    volumes:
-      - ./nextcloud/config:/config
-      - ./nextcloud/data:/data
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID_NEXTCLOUD}
+      PGID: ${PGID_DATACENTER}
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost/status.php || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
     networks:
-      - www_default
       - default
+      - www_default
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud/config:/config
+      - ./nextcloud/data:/data
 
   backrest:
     image: ghcr.io/garethgeorge/backrest:v1.12.1
+    environment:
+      TZ: ${TZ}
+      BACKREST_DATA: /data
+      BACKREST_CONFIG: /config/config.json
+      XDG_CACHE_HOME: /cache
+      TMPDIR: /tmp
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9898 || exit 1
+    ports:
+      - "9898:9898"
+    restart: unless-stopped
     volumes:
       - ./backrest/data:/data
       - ./backrest/config:/config
@@ -49,21 +51,6 @@ services:
       - ./backrest/tmp:/tmp
       - ${BACKREST_USERDATA}:/userdata
       - ${BACKREST_REPOS}:/repos
-    ports:
-      - "9898:9898"
-    environment:
-      BACKREST_DATA: /data
-      BACKREST_CONFIG: /config/config.json
-      XDG_CACHE_HOME: /cache
-      TMPDIR: /tmp
-      TZ: ${TZ}
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:9898 || exit 1
-      start_period: 30s
-      timeout: 5s
-      interval: 30s
-      retries: 3
-    restart: unless-stopped
 
 networks:
   www_default:
