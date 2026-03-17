@@ -9,21 +9,23 @@ Personal homelab running on a single self-hosted server. All services are contai
                             │
                      ┌──────▼──────┐
                      │    www      │
-                     │    SWAG     │  reverse proxy + TLS (Let's Encrypt)
+                     │   *SWAG     │  reverse proxy + TLS (Let's Encrypt)
                      └──────┬──────┘
                             │ www_default network
           ┌─────────────────┼──────────────────┐
           │                 │                  │
-   ┌──────▼──────┐  ┌───────▼──────┐          │
-   │  mediacenter│  │  datacenter  │   monitoring & speedtest
-   │             │  │              │   (LAN only)
-   │  Jellyfin   │  │  Nextcloud   │
-   │  Seerr      │  │  Postgres    │
-   │  Sonarr     │  │  Backrest    │
-   │  Radarr     │  └──────────────┘
-   │  Prowlarr   │
+   ┌──────▼──────┐  ┌───────▼──────┐  ┌──────▼────────┐
+   │  mediacenter│  │  datacenter  │  │  monitoring   │
+   │             │  │              │  │               │
+   │ *Jellyfin   │  │ *Nextcloud   │  │  homepage     │
+   │ *Seerr      │  │  Postgres    │  │  librespeed   │
+   │  Sonarr     │  │  Backrest    │  │  portainer    │
+   │  Radarr     │  └──────────────┘  │  scrutiny     │
+   │  Prowlarr   │                    └───────────────┘
    │  qBittorrent│
    └─────────────┘
+
+* = exposed publicly
 ```
 
 ## Stacks
@@ -40,39 +42,32 @@ Self-hosted personal cloud and backup. Nextcloud (backed by Postgres) handles fi
 ### `monitoring` — observability
 Internal-only stack for keeping an eye on the server. Homepage provides a unified dashboard, Portainer gives a Docker management UI, and Scrutiny monitors disk health via S.M.A.R.T. data.
 
-### `speedtest` — network benchmarking
-Standalone LibreSpeed instance for LAN and WAN bandwidth testing without relying on external services.
-
 ## Usage
 
 ### First run
+Each stack has a `.env.example` file. Copy it to `.env` and fill in the required values before starting:
+
+```bash
+cp .env.example .env
+```
+
 The `www` stack must be started first — it creates the `www_default` Docker network that other stacks depend on.
 
 ```bash
 cd www && docker compose up -d
 ```
 
-Then start the remaining stacks in any order:
+Then start the remaining stacks with the update script
 
 ```bash
-cd ../mediacenter && docker compose up -d
-cd ../datacenter  && docker compose up -d
-cd ../monitoring  && docker compose up -d
-cd ../speedtest   && docker compose up -d
+./update-all.sh
 ```
 
 ### Updating all stacks
+Setup a cron schedule to run this script at your convenience. Recommended: 0 4 * * * (every day at 04:00).
 
 ```bash
 ./update-all.sh
 ```
 
 Pulls the latest Git changes, recreates all stacks with updated images, and prunes unused Docker resources.
-
-### Environment variables
-
-Each stack has a `.env.example` file. Copy it to `.env` and fill in the required values before starting:
-
-```bash
-cp .env.example .env
-```
