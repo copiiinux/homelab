@@ -13,7 +13,7 @@ services:
       - ./postgres:/var/lib/postgresql
 
   nextcloud:
-    image: lscr.io/linuxserver/nextcloud:33.0.0
+    image: lscr.io/linuxserver/nextcloud:33.0.1
     depends_on:
       postgres:
         condition: service_healthy
