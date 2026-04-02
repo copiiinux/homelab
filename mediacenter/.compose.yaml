@@ -76,7 +76,7 @@ services:
       - ${TORRENT_ROOT}:/downloads
 
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:10.11.6
+    image: lscr.io/linuxserver/jellyfin:10.11.7
     environment:
       TZ: ${TZ}
       PUID: ${PUID_JELLYFIN}
