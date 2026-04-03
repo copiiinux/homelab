@@ -30,7 +30,7 @@ services:
       - ./portainer:/data
 
   homepage:
-    image: ghcr.io/gethomepage/homepage:v1.12.1
+    image: ghcr.io/gethomepage/homepage:v1.12.3
     environment:
       PUID: ${PUID_HOMEPAGE}
       PGID: ${PGID_MONITORING}
