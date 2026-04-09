@@ -45,7 +45,7 @@ services:
       - ${MEDIA_ROOT}:/data
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.3.0
+    image: lscr.io/linuxserver/prowlarr:2.3.5
     environment:
       TZ: ${TZ}
       PUID: ${PUID_PROWLARR}
