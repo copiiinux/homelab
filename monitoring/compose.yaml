@@ -45,7 +45,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   librespeed:
-    image: lscr.io/linuxserver/librespeed:6.0.2
+    image: lscr.io/linuxserver/librespeed:6.1.0
     environment:
       TZ: ${TZ}
       PUID: ${PUID_LIBRESPEED}
