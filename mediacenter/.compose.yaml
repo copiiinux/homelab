@@ -59,7 +59,7 @@ services:
       - ./prowlarr:/config
 
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:5.1.4
+    image: lscr.io/linuxserver/qbittorrent:5.2.0
     environment:
       TZ: ${TZ}
       PUID: ${PUID_QBITTORRENT}
