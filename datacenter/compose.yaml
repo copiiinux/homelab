@@ -56,7 +56,6 @@ services:
     image: clamav/clamav:1.5.2_base
     restart: unless-stopped
     volumes:
-      - ./clamav/config:/etc/clamav
       - ./clamav/database:/var/lib/clamav
 
 networks:
