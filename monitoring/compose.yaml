@@ -37,7 +37,7 @@ services:
       - ./portainer:/data
 
   librespeed:
-    image: lscr.io/linuxserver/librespeed:6.2.0
+    image: lscr.io/linuxserver/librespeed:6.2.1
     environment:
       TZ: ${TZ}
       PUID: ${PUID_LIBRESPEED}
