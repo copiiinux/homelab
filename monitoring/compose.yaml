@@ -3,17 +3,24 @@ services:
     image: ghcr.io/starosdev/scrutiny:1.68.0-omnibus
     cap_add:
       - SYS_RAWIO
+      - SYS_ADMIN
     devices:
       - /dev/sda
       - /dev/sdb
       - /dev/sdc
       - /dev/sdd
+      - /dev/md0
+    environment:
+      COLLECTOR_MDADM_RUN_STARTUP: ${COLLECTOR_MDADM_RUN_STARTUP}
+      COLLECTOR_MDADM_CRON_SCHEDULE: ${COLLECTOR_MDADM_CRON_SCHEDULE}
     healthcheck:
       test: curl -fso /dev/null http://localhost:8080/api/health || exit 1 # wget not packaged
     ports:
       - "8081:8080"
     restart: unless-stopped
     volumes:
+      - /dev:/dev:ro
+      - /proc/mdstat:/host/proc/mdstat:ro
       - /run/udev:/run/udev:ro
       - ./scrutiny/config:/opt/scrutiny/config
       - ./scrutiny/influxdb:/opt/scrutiny/influxdb
