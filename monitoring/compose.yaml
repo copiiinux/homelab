@@ -29,21 +29,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer:/data
 
-  homepage:
-    image: ghcr.io/gethomepage/homepage:v1.13.2
-    environment:
-      PUID: ${PUID_HOMEPAGE}
-      PGID: ${PGID_MONITORING}
-      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-    volumes:
-      - ./homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-
   librespeed:
     image: lscr.io/linuxserver/librespeed:6.2.0
     environment:
