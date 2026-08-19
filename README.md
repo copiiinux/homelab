@@ -1,28 +1,27 @@
 # homelab
 
-Personal homelab running on a single self-hosted server. All services are containerised with Docker Compose and organised into independent stacks, each with a focused responsibility.
+Personal homelab running on a single self-hosted server. All services are containerised with Docker Compose and
+organised into independent stacks, each with a focused responsibility.
 
 ## Architecture
 
 ```
-                        Internet
-                            │
-                     ┌──────▼──────┐
-                     │    www      │
-                     │   *SWAG     │  reverse proxy + TLS (Let's Encrypt)
-                     └──────┬──────┘
-                            │ www_default network
-          ┌─────────────────┼──────────────────┐
-          │                 │                  │
-   ┌──────▼──────┐  ┌───────▼──────┐  ┌──────▼────────┐
-   │  mediacenter│  │  datacenter  │  │  monitoring   │
-   │             │  │              │  │               │
-   │ *Jellyfin   │  │ *Nextcloud   │  │  homepage     │
-   │ *Seerr      │  │  Postgres    │  │  librespeed   │
-   │  Sonarr     │  │  Backrest    │  │  portainer    │
-   │  Radarr     │  └──────────────┘  │  scrutiny     │
-   │  Prowlarr   │                    └───────────────┘
-   │  qBittorrent│
+                 Internet
+                     │
+              ┌──────▼──────┐
+              │    www      │
+              │             │
+              │   *swag     │  reverse proxy + TLS (Let's Encrypt)
+              └──────┬──────┘
+                     │ www_default network
+          ┌─────────────────────┐
+   ┌──────▼──────┐       ┌──────▼────────┐
+   │  datacenter │       │  monitoring   │
+   │             │       │               │
+   │  postgres   │       │  scrutiny     │
+   │ *nextcloud  │       │  portainer    │
+   │  backrest   │       │  librespeed   │
+   │  clamav     │       └───────────────┘
    └─────────────┘
 
 * = exposed publicly
@@ -31,20 +30,25 @@ Personal homelab running on a single self-hosted server. All services are contai
 ## Stacks
 
 ### `www` — reverse proxy
-Entry point for all public traffic. SWAG handles TLS certificate issuance and renewal via Let's Encrypt (DNS challenge with Infomaniak), and routes incoming HTTPS requests to the appropriate internal services over the shared `www_default` Docker network.
 
-### `mediacenter` — media automation
-Full *arr stack for automated media acquisition and streaming. Prowlarr indexes trackers, Sonarr and Radarr manage TV shows and movies, qBittorrent handles downloads, Jellyfin serves the library, and Seerr provides a user-friendly request interface.
+Entry point for all public traffic. SWAG handles TLS certificate issuance and renewal via Let's Encrypt (DNS challenge
+with Infomaniak), and routes incoming HTTPS requests to the appropriate internal services over the shared `www_default`
+Docker network.
 
 ### `datacenter` — personal data
-Self-hosted personal cloud and backup. Nextcloud (backed by Postgres) handles file sync, contacts, and calendar. Backrest manages encrypted off-site backups of critical data.
+
+Self-hosted personal cloud and backup. Nextcloud (backed by Postgres) handles file sync, contacts, and calendar.
+Backrest manages encrypted off-site backups of critical data.
 
 ### `monitoring` — observability
-Internal-only stack for keeping an eye on the server. Homepage provides a unified dashboard, Portainer gives a Docker management UI, and Scrutiny monitors disk health via S.M.A.R.T. data.
+
+Internal-only stack for keeping an eye on the server. Portainer gives a Docker management UI, and Scrutiny monitors disk
+health via S.M.A.R.T. data.
 
 ## Usage
 
 ### First run
+
 Each stack has a `.env.example` file. Copy it to `.env` and fill in the required values before starting:
 
 ```bash
@@ -64,6 +68,7 @@ Then start the remaining stacks with the update script
 ```
 
 ### Updating all stacks
+
 Setup a cron schedule to run this script at your convenience. Recommended: 0 4 * * * (every day at 04:00).
 
 ```bash
