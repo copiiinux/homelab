@@ -26,7 +26,7 @@ services:
       - ./scrutiny/influxdb:/opt/scrutiny/influxdb
 
   portainer:
-    image: portainer/portainer-ce:2.45.0-alpine
+    image: portainer/portainer-ce:2.45.1-alpine
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:9000/api/system/status || exit 1
     ports:
